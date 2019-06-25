@@ -4,7 +4,8 @@ import Compare from 'mapbox-gl-compare'
 import 'mapbox-gl/dist/mapbox-gl.css';
 import 'mapbox-gl-compare/dist/mapbox-gl-compare.css';
 import curbs from '../geojson/matched_curbs.json';
-import curbs_unmatched from '../geojson/original_curb_data.json';
+import curbs_unmatched from '../geojson/original_curb_lines.json';
+import { Helmet } from "react-helmet"
 
 mapboxgl.accessToken = 'pk.eyJ1Ijoic2FhZGlxbSIsImEiOiJjamJpMXcxa3AyMG9zMzNyNmdxNDlneGRvIn0.wjlI8r1S_-xxtq2d-W5qPA';
 
@@ -51,6 +52,7 @@ class CurbMap extends Component {
     }};
 
     this.map1.on('load', () => {
+
         this.map1.addSource('Curbs', {
           type: 'geojson',
           data: curbs
@@ -82,7 +84,7 @@ class CurbMap extends Component {
             "line-offset": scaledWidth(12),
             "line-opacity": 0.5
           },
-          filter:["==", "sideOfStreet", "right"]
+          filter:["==", "side", "right"]
         });
 
         this.map1.addLayer({
@@ -95,7 +97,7 @@ class CurbMap extends Component {
             "line-offset": scaledWidth(-12),
             "line-opacity": 0.5
           },
-          filter:["==", "sideOfStreet", "left"]
+          filter:["==", "side", "left"]
         });
       });
   }
@@ -104,20 +106,22 @@ class CurbMap extends Component {
   render(){
 
     return(
+
       <div>
 
-        <div ref={el => this.map1 = el} style={{position: 'absolute',
-        top: 0,
-        bottom: 0,
-        width: '100%',
-        height: '100%'}}/>
+      <Helmet>
+        <link href="https://api.mapbox.com/mapbox-assembly/v0.23.2/assembly.min.css" rel="stylesheet"/>
+      </Helmet>
 
-        // <div ref={el => this.before = el} style={{position: 'absolute',top: 0, bottom: 0, width: '100%',height: '100%'}}/>
-        // <div ref={el => this.after = el} style={{position: 'absolute',top: 0,bottom: 0,width: '100%',height: '100%'}}/>
+      <div ref={el => this.before = el} style={{position: 'absolute',top: 0, bottom: 0, width: '100%',height: '100%'}}></div>
+      <div ref={el => this.after = el} style={{position: 'absolute',top: 0,bottom: 0,width: '100%',height: '100%'}}/>
+
+      <div className='color-white txt-h6 txt-bold flex-parent flex-parent--center-cross flex-parent--center-main  absolute top left ml36 mt36 w180 h60 bg-gray'><div className='flex-child'>MATCHED GEOMETRY</div></div>
+      <div className='color-white txt-h6 txt-bold flex-parent flex-parent--center-cross flex-parent--center-main absolute top right mr36 mt36 w180 h60 bg-gray'><div className='flex-child'>ORIGINAL GEOMETRY</div></div>
+
       </div>
     );
   }
-
 }
 
 export default CurbMap
